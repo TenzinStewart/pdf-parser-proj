@@ -12,9 +12,9 @@ Parser
     > Convert a series of pdf path objects to entries in a dictionary
 - process_WCC_Paycheck(folder:str) -> pd.DataFrame
     > Parse & sort data as WCC_Paycheck class object
-- organize(df:pd.DataFrame, get_cols:list[str], sort_col:str, print:bool=False) -> pd.DataFrame
+- organize(df:pd.DataFrame, get_cols:list[str], sort_col:str, show:bool=False) -> pd.DataFrame
     > Sort data frame for some column, then select desired columns
-- filter_dataframe(df:pd.DataFrame, column:str, search:str, mode:str, print:bool=False) -> pd.DataFrame
+- filter_dataframe(df:pd.DataFrame, column:str, search:str, mode:str, show:bool=False) -> pd.DataFrame
     > Filter data frame rows by column
 
 [Classes]
@@ -138,14 +138,14 @@ def process_WCC_Paycheck(folder:str) -> pd.DataFrame:
         df_dict[header] = [check.spill()[i] for check in paychecks]
     return pd.DataFrame(df_dict).sort_values("advice_num")
 
-def organize(df:pd.DataFrame, get_cols:list[str], sort_col:str, print:bool=False) -> pd.DataFrame:
+def organize(df:pd.DataFrame, get_cols:list[str], sort_col:str, show:bool=False) -> pd.DataFrame:
     """Filter sort data frame for some column, then select desired columns"""
     df = df.sort_values(sort_col)
     out = df[get_cols]
-    print_(out, cond=print)
+    print_(out, cond=show)
     return out
 
-def filter_dataframe(df:pd.DataFrame, column:str, search:str, mode:str, print:bool=False) -> pd.DataFrame:
+def filter_dataframe(df:pd.DataFrame, column:str, search:str, mode:str, show:bool=False) -> pd.DataFrame:
     """ Filter data frame rows by column  
     [Args]  
     df: DataFrame = the dataframe object to extract and filter data from  
@@ -153,7 +153,7 @@ def filter_dataframe(df:pd.DataFrame, column:str, search:str, mode:str, print:bo
     search: str = value used in filter protocol to select entries  
     mode: str = protocol for filtering  
     > "year_value" = get year value with matching search value (m/d/yy) 
-    print: bool = print final output dataframe in terminal 
+    show: bool = show final output dataframe in terminal 
 
     [Returns]  
     copy: DataFrame = new dataframe object that is a filtered copy of the original
@@ -166,7 +166,7 @@ def filter_dataframe(df:pd.DataFrame, column:str, search:str, mode:str, print:bo
         copy = copy[scope.dt.year == int(search)]
     #Room to expand to other filter modes
 
-    print_(copy, cond=print)
+    print_(copy, cond=show)
     return pd.DataFrame(copy)
 
 class Interface_Block():
@@ -207,7 +207,7 @@ class NFCU_Transactions():
     > accounts:     list[str]       ["Checking", "Savings"]
 
     """
-    def __init__(self, folder:Path|str, print:bool=True) -> None:
+    def __init__(self, folder:Path|str, show:bool=True) -> None:
         if Path.is_dir(Path(folder)):
             self.folder = folder
         self.accounts:list[str] = ["Checking", "Savings"]
@@ -234,8 +234,8 @@ class NFCU_Transactions():
             f"Accounts:\t{self.accounts}",
         ]
         for line in self.print_block:
-            print_(line, cond=print)
-        print_(self.frame, cond=print)
+            print_(line, cond=show)
+        print_(self.frame, cond=show)
 
     def get_latest(self, paths:str|Path|Iterator[Path], glob_str:str="*.pdf",
                 print:bool=False) -> Path:

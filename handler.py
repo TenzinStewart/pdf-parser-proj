@@ -18,7 +18,7 @@ if run_WCC:
     WCC_stubs = psr.organize(df=psr.process_WCC_Paycheck("data/WCC_paychecks"),
                 get_cols=directory_stubs,
                 sort_col="advice_num",
-                print=False)
+                show=False)
     # WCC_Paycheck Data for 2025
     WCC_2025 = psr.filter_dataframe(df=WCC_stubs,
                                     column="pay_end_date",
@@ -37,6 +37,6 @@ if run_WCC:
 
 """ NFCU HANDLING """
 if run_NFCU:
-    transactions = psr.NFCU_Transactions("data/NFCU/transactions", print=False)
+    transactions = psr.NFCU_Transactions("data/NFCU/transactions", show=False)
     transactions.clip("Savings")
     transactions.present("Checking")
