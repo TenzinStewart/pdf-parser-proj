@@ -210,7 +210,6 @@ class NFCU_Transactions():
     def __init__(self, folder:Path|str, print:bool=True) -> None:
         if Path.is_dir(Path(folder)):
             self.folder = folder
-        self.raw:dict = pdf_extract(self.get_latest(path_ls(folder)))
         self.accounts:list[str] = ["Checking", "Savings"]
 
         self.extract_settings:dict = {
