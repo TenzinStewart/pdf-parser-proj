@@ -31,8 +31,9 @@ if run_WCC:
                                 mode="year_value")
     #Inteface outputs in CSV format
     WCC_str = "Whatcom Community College"
-    Interface_Block(WCC_str, stubs_2025).report(as_csv=True)
-    Interface_Block(WCC_str, stubs_2026).report(as_csv=True)
+
+    psr.Interface_Block(WCC_str, WCC_2025).report(as_csv=True)
+    psr.Interface_Block(WCC_str, WCC_2026).report(as_csv=True)
 
 """ NFCU HANDLING """
 if run_NFCU:
