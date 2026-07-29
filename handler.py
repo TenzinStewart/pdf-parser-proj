@@ -1,7 +1,7 @@
 import parser as psr
 """ Dashboard"""
 run_WCC:bool = False
-run_NFCU:bool = False
+run_NFCU:bool = True
 
 
 
@@ -38,5 +38,8 @@ if run_WCC:
 """ NFCU HANDLING """
 if run_NFCU:
     transactions = psr.NFCU_Transactions("data/NFCU/transactions", show=False)
-    # Intent to handle transaction data through Interface_Block
-print("\n\nDone.")
+    transactions_file_path:str = "output/NFCU_Transactions.csv"
+    with open(transactions_file_path, "w") as f:
+        transactions.present().to_csv(f)
+
+psr.print_("\n\nDone.", cond=True)
