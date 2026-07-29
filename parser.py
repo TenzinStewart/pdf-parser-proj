@@ -332,3 +332,9 @@ class NFCU_Transactions():
         catch = self.present(account=account)
         catch.to_clipboard()
     
+class Paystubs():
+    def __init__(self, format:str) -> None:
+        formats = ["WCC","ACFL"] #Room for more
+
+        if format not in formats:
+            raise ValueError(f"invalid format. '{format}' is not in {formats}")
