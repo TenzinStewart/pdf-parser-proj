@@ -210,6 +210,7 @@ class NFCU_Transactions():
     def __init__(self, folder:Path|str, show:bool=True) -> None:
         if Path(folder).is_dir():
             self.folder = folder
+        else: raise NotADirectoryError(folder)
         self.accounts:list[str] = ["Checking", "Savings"]
 
         self.extract_settings:dict = {
