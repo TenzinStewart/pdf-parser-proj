@@ -208,7 +208,7 @@ class NFCU_Transactions():
 
     """
     def __init__(self, folder:Path|str, show:bool=True) -> None:
-        if Path.is_dir(Path(folder)):
+        if Path(folder).is_dir():
             self.folder = folder
         self.accounts:list[str] = ["Checking", "Savings"]
 
@@ -221,7 +221,7 @@ class NFCU_Transactions():
 
         self.acc_data:dict[str, pd.DataFrame] = {}
         for acc in self.accounts:
-            acc_path:Path = self.get_latest(paths=folder, glob_str=f"*{acc}.pdf", print=False)
+            acc_path:Path = self.get_latest(paths=folder, glob_str=f"*{acc}.pdf", show=False)
             acc_df = self.extract(pdf_path=acc_path)
             self.acc_data[acc] = acc_df
 
@@ -238,7 +238,7 @@ class NFCU_Transactions():
         print_(self.frame, cond=show)
 
     def get_latest(self, paths:str|Path|Iterator[Path], glob_str:str="*.pdf",
-                print:bool=False) -> Path:
+                show:bool=False) -> Path:
         if isinstance(paths, (str, Path)):
             ls:list[Path|str] = [path for path in path_ls(paths, glob_str=glob_str)]
         else: ls:list[Path|str] = [path for path in paths]
@@ -251,7 +251,7 @@ class NFCU_Transactions():
         latest = max(file_dates)
         latest_index = file_dates.index(latest)
         out = Path(ls[latest_index])
-        print_(out, cond=print)
+        print_(out, cond=show)
         return out
     
     def extract(self, pdf_path: Path) -> pd.DataFrame:
@@ -314,8 +314,8 @@ class NFCU_Transactions():
         # Re-index cleanly now that spacer/header rows have been removed.
         return df.reset_index(drop=True)
 
-    def present(self, account:str|list[str]="all", cols:list[str]=[""]) -> pd.DataFrame:
-        cols = self.extract_settings["columns"] if cols == [""] else cols
+    def present(self, account:str|list[str]="all", cols:list[str]|None=None) -> pd.DataFrame:
+        cols = self.extract_settings["columns"] if cols is None else cols
         df_stack:list[pd.DataFrame] = []
         account = self.accounts if account == "all" else account
         if type(account) == str:
