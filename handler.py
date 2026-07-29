@@ -1,9 +1,7 @@
 import parser as psr
 """ Dashboard"""
 run_WCC:bool = False
-run_NFCU:bool = True
-
-
+run_NFCU:bool = False
 
 """ WCC PAYCHECK HANDLING """
 if run_WCC:
