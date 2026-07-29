@@ -103,6 +103,13 @@ def collect_pdfs(pdf_ls:Iterator[Path]) -> dict[str, dict]:
         pdfs_dict[pdf_dict['name']] = pdf_dict
     return pdfs_dict
 
+def organize(df:pd.DataFrame, get_cols:list[str], sort_col:str, show:bool=False) -> pd.DataFrame:
+    """Filter sort data frame for some column, then select desired columns"""
+    df = df.sort_values(sort_col)
+    out = df[get_cols]
+    print_(out, cond=show)
+    return out
+
 class WCC_Paycheck():
      def __init__(self, pdf_text:str) -> None:
           pdf_lines = pdf_text.splitlines()
@@ -137,13 +144,6 @@ def process_WCC_Paycheck(folder:str) -> pd.DataFrame:
     for i, header in enumerate(paychecks[0].header()):
         df_dict[header] = [check.spill()[i] for check in paychecks]
     return pd.DataFrame(df_dict).sort_values("advice_num")
-
-def organize(df:pd.DataFrame, get_cols:list[str], sort_col:str, show:bool=False) -> pd.DataFrame:
-    """Filter sort data frame for some column, then select desired columns"""
-    df = df.sort_values(sort_col)
-    out = df[get_cols]
-    print_(out, cond=show)
-    return out
 
 def filter_dataframe(df:pd.DataFrame, column:str, search:str, mode:str, show:bool=False) -> pd.DataFrame:
     """ Filter data frame rows by column  
@@ -342,5 +342,6 @@ class Paystubs():
             raise NotADirectoryError(f"{folder} is not a directory")
 
         if format == "WCC":
-            
+            pass
         if format == "ACFL":
+            pass
