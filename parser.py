@@ -333,8 +333,14 @@ class NFCU_Transactions():
         catch.to_clipboard()
     
 class Paystubs():
-    def __init__(self, format:str) -> None:
-        formats = ["WCC","ACFL"] #Room for more
+    def __init__(self, format:str, folder:str) -> None:
+        formats:list[str] = ["WCC","ACFL"] #Room for more
 
         if format not in formats:
             raise ValueError(f"invalid format. '{format}' is not in {formats}")
+        if not Path(folder).is_dir():
+            raise NotADirectoryError(f"{folder} is not a directory")
+
+        if format == "WCC":
+            
+        if format == "ACFL":
