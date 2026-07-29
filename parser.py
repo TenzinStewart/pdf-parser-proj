@@ -110,6 +110,30 @@ def organize(df:pd.DataFrame, get_cols:list[str], sort_col:str, show:bool=False)
     print_(out, cond=show)
     return out
 
+def filter_dataframe(df:pd.DataFrame, column:str, search:str, mode:str, show:bool=False) -> pd.DataFrame:
+    """ Filter data frame rows by column  
+    [Args]  
+    df: DataFrame = the dataframe object to extract and filter data from  
+    column: str = the column for which to apply filter  
+    search: str = value used in filter protocol to select entries  
+    mode: str = protocol for filtering  
+    > "year_value" = get year value with matching search value (m/d/yy) 
+    show: bool = show final output dataframe in terminal 
+
+    [Returns]  
+    copy: DataFrame = new dataframe object that is a filtered copy of the original
+    """
+    copy = df.copy()
+    scope = copy[column]
+
+    if mode == "year_value":
+        scope = pd.to_datetime(scope, format="%m/%d/%Y")
+        copy = copy[scope.dt.year == int(search)]
+    #Room to expand to other filter modes
+
+    print_(copy, cond=show)
+    return pd.DataFrame(copy)
+
 class WCC_Paycheck():
      def __init__(self, pdf_text:str) -> None:
           pdf_lines = pdf_text.splitlines()
@@ -145,29 +169,6 @@ def process_WCC_Paycheck(folder:str) -> pd.DataFrame:
         df_dict[header] = [check.spill()[i] for check in paychecks]
     return pd.DataFrame(df_dict).sort_values("advice_num")
 
-def filter_dataframe(df:pd.DataFrame, column:str, search:str, mode:str, show:bool=False) -> pd.DataFrame:
-    """ Filter data frame rows by column  
-    [Args]  
-    df: DataFrame = the dataframe object to extract and filter data from  
-    column: str = the column for which to apply filter  
-    search: str = value used in filter protocol to select entries  
-    mode: str = protocol for filtering  
-    > "year_value" = get year value with matching search value (m/d/yy) 
-    show: bool = show final output dataframe in terminal 
-
-    [Returns]  
-    copy: DataFrame = new dataframe object that is a filtered copy of the original
-    """
-    copy = df.copy()
-    scope = copy[column]
-
-    if mode == "year_value":
-        scope = pd.to_datetime(scope, format="%m/%d/%Y")
-        copy = copy[scope.dt.year == int(search)]
-    #Room to expand to other filter modes
-
-    print_(copy, cond=show)
-    return pd.DataFrame(copy)
 
 class Interface_Block():
     def __init__(self, source:str, data:pd.DataFrame) -> None:
