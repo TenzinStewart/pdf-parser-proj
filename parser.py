@@ -36,6 +36,7 @@ import re
 from datetime import datetime 
 from collections.abc import Iterator
 from pathlib import Path
+from typing import cast
 
 def print_(*values:object, cond:bool=True) -> None:
     """Conditional print function with boolean argument"""
@@ -135,8 +136,9 @@ def filter_dataframe(df:pd.DataFrame, column:str, search:str, mode:str, show:boo
     return pd.DataFrame(copy)
 
 class WCC_Paycheck():
-     def __init__(self, pdf_text:str) -> None:
-          pdf_lines = pdf_text.splitlines()
+     def __init__(self, file_path:str|Path) -> None:
+          
+          pdf_lines = self.parse(file_path=file_path).splitlines()
           self.advice_num =         int(pdf_lines[1].split(sep=" ")[10])
           self.pay_begin_date =     str(pdf_lines[1].split(sep=" ")[7])
           self.pay_end_date =       str(pdf_lines[2].split(sep=" ")[6])
@@ -148,6 +150,8 @@ class WCC_Paycheck():
           self.net_pay =            self.to_float(pdf_lines[23].split(sep=" ")[-1])
           self.ytd_net_pay =        self.to_float(pdf_lines[24].split(sep=" ")[-1])
 
+          self.data = self.to_dataframe()
+
      def spill(self) -> list[object]:
           return [value for value in self.__dict__.values()]
      
@@ -156,7 +160,19 @@ class WCC_Paycheck():
      
      def to_float(self, amount:str) -> float:
         out = amount.replace(',','').replace('$','')
-        return float(out)     
+        return float(out)
+
+     def parse(self, file_path:str|Path) -> str:
+         extracted = pdf_extract(Path(file_path))
+         page = cast(dict, extracted['1'])
+         text = page['text']
+         return text
+
+     def to_dataframe(self) -> pd.DataFrame:
+        df_dict:dict[str|float|int, list|None] = {}
+        for i, header in enumerate(self.header()):
+            df_dict[header] = [self.spill()[i]]
+        return pd.DataFrame(df_dict).sort_values("advice_num")
 
 def process_WCC_Paycheck(folder:str) -> pd.DataFrame:
     """Parse & sort data as WCC_Paycheck class objects"""
@@ -346,3 +362,7 @@ class Paystubs():
             pass
         if format == "ACFL":
             pass
+
+# Works as intended 7.29.26
+# test = WCC_Paycheck("data/WCC_paychecks/2557575.pdf")
+# print(test.data)
