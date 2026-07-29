@@ -38,5 +38,5 @@ if run_WCC:
 """ NFCU HANDLING """
 if run_NFCU:
     transactions = psr.NFCU_Transactions("data/NFCU/transactions", show=False)
-    transactions.clip("Savings")
-    transactions.present("Checking")
+    # Intent to handle transaction data through Interface_Block
+print("\n\nDone.")
